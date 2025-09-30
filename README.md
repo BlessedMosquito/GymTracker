@@ -1,11 +1,20 @@
-Wymagania: macOS, zainstalowany Flutter SDK, zainstalowany Xcode (z App Store), dowolny edytor np. VS Code.
-Pobierz projekt z GitHuba:
-git clone https://github.com/TWOJE_REPOZYTORIUM.git
-cd TWOJE_REPOZYTORIUM
-Zainstaluj zależności:
+# Instrukcja uruchomienia aplikacji na iPhone
+
+## Wymagania
+- macOS  
+- Zainstalowany [Flutter SDK](https://docs.flutter.dev/get-started/install/macos)  
+- Zainstalowany **Xcode** (z App Store)  
+- (opcjonalnie) Visual Studio Code jako edytor  
+
+## Kroki
+
+1. Pobierz projekt z GitHuba:
+   ```bash
+   git clone https://github.com/TWOJE_REPOZYTORIUM.git
+   cd TWOJE_REPOZYTORIUM
+2. Zainstaluj zależności:
 flutter pub get
-Uruchom symulator iPhone:
+3. Uruchom symulator iPhone:
 open -a Simulator
-Uruchom aplikację na symulatorze:
+4. Uruchom aplikację:
 flutter run
-Aplikacja zostanie automatycznie zainstalowana i uruchomiona na symulatorze iPhone.
