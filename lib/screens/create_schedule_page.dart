@@ -33,8 +33,6 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
   void _openExerciseFormDialog(
       BuildContext context, String day, void Function(void Function()) setStateDialog) {
     final nameController = TextEditingController();
-    final setsController = TextEditingController();
-    final repsController = TextEditingController();
 
     showDialog(
       context: context,
@@ -144,7 +142,7 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
 
                   setStateDialog(() {});
 
-                  Navigator.of(context).pop(); // zamykamy tylko formularz
+                  Navigator.of(context).pop();
                 },
                 child: const Text("Save"),
               ),
