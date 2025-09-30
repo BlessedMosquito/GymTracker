@@ -3,6 +3,7 @@ import '../data.dart';
 import '../models/exercise.dart';
 import '../models/trainings.dart';
 import '../theme/gradient_scaffold.dart';
+import 'package:flutter/cupertino.dart';
 
 class CreateSchedulePage extends StatefulWidget {
   const CreateSchedulePage({super.key});
@@ -21,6 +22,11 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
     "Saturday",
     "Sunday"
   ];
+
+  int selectedSets = 1;
+  int selectedReps = 1;
+  static int maxSets = 10;
+  static int maxReps = 30;
 
   final Map<String, List<Exercise>> schedule = {};
 
@@ -46,23 +52,44 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
                 ),
               ),
               const SizedBox(height: 10),
-              TextField(
-                controller: setsController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: "Sets",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: repsController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: "Reps",
-                  border: OutlineInputBorder(),
-                ),
-              ),
+                                const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Sets", style: TextStyle(fontWeight: FontWeight.w600)),
+                  ),
+                  SizedBox(
+                    height: 100,
+                    child: CupertinoPicker(
+                      itemExtent: 32,
+                      scrollController:
+                          FixedExtentScrollController(initialItem: selectedSets - 1),
+                      onSelectedItemChanged: (value) {
+                        setStateDialog(() {
+                          selectedSets = value + 1;
+                        });
+                      },
+                      children: List.generate(maxSets, (index) => Center(child: Text("${index + 1}"))),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+               const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Reps", style: TextStyle(fontWeight: FontWeight.w600)),
+                  ),
+                  SizedBox(
+                    height: 100,
+                    child: CupertinoPicker(
+                      itemExtent: 32,
+                      scrollController:
+                          FixedExtentScrollController(initialItem: selectedReps - 1),
+                      onSelectedItemChanged: (value) {
+                        setStateDialog(() {
+                          selectedReps = value + 1;
+                        });
+                      },
+                      children:
+                          List.generate(maxReps, (index) => Center(child: Text("${index + 1}"))),
+                    ),
+                  ),
             ],
           ),
           actions: [
@@ -87,8 +114,26 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
                 ),
                 onPressed: () {
                   final name = nameController.text;
-                  final sets = int.tryParse(setsController.text) ?? 0;
-                  final reps = int.tryParse(repsController.text) ?? 0;
+                  final sets = selectedSets;
+                  final reps = selectedReps;
+
+                  if (name.isEmpty || name == '') {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Invalid data"),
+                      content: const Text("Please fill all fields correctly."),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text("OK"),
+                        ),
+                      ],
+                    ),
+                  );
+                  return;
+                }
+
 
                   setState(() {
                     schedule.putIfAbsent(day, () => []);
@@ -168,6 +213,15 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
   }
 
   void _saveTraining() {
+    final hasExercises = schedule.values.any((list) => list.isNotEmpty);
+
+    if (!hasExercises) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("⚠️ Training must contain exercises!")),
+      );
+      return;
+    }
+
     final training = Training(
       name: "Training ${trainings.length + 1}",
       schedule: Map.from(schedule),
@@ -183,6 +237,7 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
       schedule.clear();
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +286,7 @@ class _CreateSchedulePageState extends State<CreateSchedulePage> {
                   ),
                 ),
               );
-            }).toList(),
+            }),
             const SizedBox(height: 20),
             Container(
               decoration: const BoxDecoration(
